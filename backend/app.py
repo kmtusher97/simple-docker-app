@@ -6,9 +6,15 @@ pymysql.install_as_MySQLdb()
 
 # initialize flask app
 app = Flask(__name__)
+app.secret_key = "Test Key"
 
 # Database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost:3306/userdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{}:{}@{}/{}'.format(
+    'root',
+    'password',
+    'database',
+    'userdb'
+)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 # initialize databse
@@ -95,11 +101,11 @@ def get_user_by_id():
 
     elif request.method == 'DELETE':
         user = User.query.get(user_id)
-        
+
         if user:
             db.session.delete(user)
             db.session.commit()
-        
+
         return user_schema.jsonify(user), 204
 
     return 400
